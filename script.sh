@@ -41,6 +41,4 @@ sudo systemctl start cups
 
 sudo systemctl enable cups
 
-sudo lpadmin -p SIPO -E -v socket://192.168.12.5 -m drv:///sample.drv/generic.ppd
-
  
