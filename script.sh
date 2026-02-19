@@ -16,7 +16,7 @@ sudo useradd -m -s /bin/bash "docker_user"
 echo 'docker_user:docker_user' | sudo chpasswd
 sudo usermod -aG docker "docker_user"
 sudo git clone "https://github.com/xlatyla/ragOllamaSimple.git" "/home/docker_user/ADIGrupo"
-sudo git clone "https://github.com/xlatyla/ragOllamaSimple.git" "/home/docker_user/SPTLogistic
+sudo git clone "https://github.com/xlatyla/ragOllamaSimple.git" "/home/docker_user/SPTLogistic"
 sudo apt install cups printer-driver-all -y
 sudo systemctl start cups
 sudo systemctl enable cups
