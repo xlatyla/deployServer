@@ -22,9 +22,9 @@ echo 'docker_user:docker_user' | sudo chpasswd
 
 sudo usermod -aG docker "docker_user"
 
-git clone "git@github.com:xlatyla/servicesADI.git" "/home/docker_user/"
+git clone "git@github.com:xlatyla/servicesADI.git" "/home/docker_user/."
 
-git clone "git@github.com:xlatyla/servicesSPT.git" "/home/docker_user/"
+git clone "git@github.com:xlatyla/servicesSPT.git" "/home/docker_user/."
 
 sudo chown -R docker_user:docker_user /home/docker_user/
 
