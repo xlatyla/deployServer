@@ -22,9 +22,28 @@ echo 'docker_user:docker_user' | sudo chpasswd
 
 sudo usermod -aG docker "docker_user"
 
-git clone "git@github.com:xlatyla/servicesADI.git" "/home/docker_user/."
+ssh-keygen -t ed25519 -C "e.alvarez@adigrupo.com" -f ~/.ssh/id_ed25519 -N "" -q
 
-git clone "git@github.com:xlatyla/servicesSPT.git" "/home/docker_user/."
+eval "$(ssh-agent -s)"
+
+ssh-add ~/.ssh/id_ed25519
+
+cat ~/.ssh/id_ed25519.pub
+
+read -p "¿Deseas continuar con el script? (s/n): " confirmacion
+
+# 2. Evaluar la respuesta
+if [[ "$confirmacion" != "s" && "$confirmacion" != "S" ]]; then
+    echo "Operación cancelada. Saliendo del script..."
+    exit 1
+fi
+
+# ... (siguientes comandos del script aquí) ...
+echo "Continuando con la ejecución..."
+
+git clone git@github.com:xlatyla/servicesADI.git /home/docker_user/servicesADI
+
+git clone git@github.com:xlatyla/servicesSPT.git /home/docker_user/servicesSPT
 
 sudo chown -R docker_user:docker_user /home/docker_user/
 
@@ -43,6 +62,8 @@ sudo cupsctl --remote-any --share-printers
 sudo systemctl restart cups
 
 echo "Instalación completada con éxito!"
+
+./montar.sh
 
 
 
