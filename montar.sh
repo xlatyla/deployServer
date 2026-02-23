@@ -27,8 +27,9 @@ else
     echo "Hubo un error al intentar montar las unidades."
 fi
 
-sudo touch /etc/systemd/system/mount.service
-echo "[Unit]
+# Escribir el contenido directamente en la ruta protegida usando sudo y tee
+sudo tee /etc/systemd/system/mount.service > /dev/null <<EOF
+[Unit]
 Description=Ejecutar script al encender el sistema
 After=network.target
 
@@ -37,7 +38,8 @@ Type=oneshot
 ExecStart=/usr/local/bin/montar.sh
 
 [Install]
-WantedBy=multi-user.target" >> mount.service
+WantedBy=multi-user.target
+EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable mount.service
