@@ -12,7 +12,6 @@ sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-
 sudo apt update
 
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
@@ -23,9 +22,9 @@ echo 'docker_user:docker_user' | sudo chpasswd
 
 sudo usermod -aG docker "docker_user"
 
-sudo git clone "git@github.com:xlatyla/servicesADI.git" "/home/docker_user/ADIGrupo"
+git clone "git@github.com:xlatyla/servicesADI.git" "/home/docker_user/"
 
-sudo git clone "git@github.com:xlatyla/servicesSPT.git" "/home/docker_user/SPTLogistic"
+git clone "git@github.com:xlatyla/servicesSPT.git" "/home/docker_user/"
 
 sudo chown -R docker_user:docker_user /home/docker_user/
 
