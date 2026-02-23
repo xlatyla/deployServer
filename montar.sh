@@ -26,3 +26,18 @@ if [ $? -eq 0 ]; then
 else
     echo "Hubo un error al intentar montar las unidades."
 fi
+
+sudo touch /etc/systemd/system/mount.service
+echo "[Unit]
+Description=Ejecutar script al encender el sistema
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/montar.sh
+
+[Install]
+WantedBy=multi-user.target" >> mount.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable mount.service
