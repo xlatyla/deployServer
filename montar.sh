@@ -26,7 +26,7 @@ if [ $? -eq 0 ]; then
 else
     echo "Hubo un error al intentar montar las unidades."
 fi
-
+cp montar.sh /usr/local/bin/montar.sh
 # Escribir el contenido directamente en la ruta protegida usando sudo y tee
 sudo tee /etc/systemd/system/mount.service > /dev/null <<EOF
 [Unit]
