@@ -1,4 +1,3 @@
-  GNU nano 7.2                                           montar2.sh
 #!/bin/bash
  
 PUNTO_MONTAJE_1="/mnt/windows/mailomya"
