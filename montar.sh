@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Asegúrate de tener las 4 variables definidas
 PUNTO_MONTAJE_1="/mnt/windows/mailomya"
 PUNTO_MONTAJE_2="/mnt/windows/tanatex"
 PUNTO_MONTAJE_3="/mnt/windows/PricingToolProccessed"
@@ -28,7 +27,7 @@ sudo mkdir -p "$PUNTO_MONTAJE_3"
 sudo mkdir -p "$PUNTO_MONTAJE_4"
 sudo mkdir -p "$PUNTO_MONTAJE_5"
 
-# 3. Añadir a fstab si no existen ya (buscando las nuevas rutas)
+# 3. Añadir a fstab si no existen ya
 echo "Configurando el montaje automático en el arranque..."
 
 if ! grep -q "servicesSPT/printer/omya" /etc/fstab; then
@@ -55,7 +54,6 @@ fi
 sudo systemctl daemon-reload
 sudo mount -a
 
-# 5. Comprobación profesional
 if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5"; then
     echo "¡Script ejecutado correctamente! Las cinco unidades están montadas."
 else
