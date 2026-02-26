@@ -6,6 +6,7 @@ PUNTO_MONTAJE_2="/mnt/windows/tanatex"
 PUNTO_MONTAJE_3="/mnt/windows/PricingToolProccessed"
 PUNTO_MONTAJE_4="/mnt/windows/PricingTool"
 PUNTO_MONTAJE_5="/mnt/windows/certs"
+PUNTO_MONTAJE_6="/mnt/windows/disco_e"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -27,7 +28,7 @@ sudo mkdir -p "$PUNTO_MONTAJE_2"
 sudo mkdir -p "$PUNTO_MONTAJE_3"
 sudo mkdir -p "$PUNTO_MONTAJE_4"
 sudo mkdir -p "$PUNTO_MONTAJE_5"
-
+sudo mkdir -p "$PUNTO_MONTAJE_6"
 # 3. Añadir a fstab si no existen ya (buscando las nuevas rutas)
 echo "Configurando el montaje automático en el arranque..."
 
@@ -51,12 +52,15 @@ if ! grep -q "10.0.0.102/Users/o.poncelas" /etc/fstab; then
     echo "//10.0.0.102/Users/o.poncelas/Documents/bin  $PUNTO_MONTAJE_5  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
+if ! grep -q "10.0.0.100/E\$" /etc/fstab; then
+    echo "//10.0.0.100/E$  $PUNTO_MONTAJE_6  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+fi
 # 4. Recargar y montar
 sudo systemctl daemon-reload
 sudo mount -a
 
 # 5. Comprobación profesional
-if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5"; then
+if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6"; then
     echo "¡Script ejecutado correctamente! Las cinco unidades están montadas."
 else
     echo "Hubo un error al intentar montar las unidades. Revisa la IP, los nombres de las carpetas compartidas o las credenciales."
