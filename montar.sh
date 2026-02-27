@@ -28,7 +28,6 @@ sudo mkdir -p "$PUNTO_MONTAJE_3"
 sudo mkdir -p "$PUNTO_MONTAJE_4"
 sudo mkdir -p "$PUNTO_MONTAJE_5"
 sudo mkdir -p "$PUNTO_MONTAJE_6"
-# 3. Añadir a fstab si no existen ya (buscando las nuevas rutas)
 
 # 3. Añadir a fstab si no existen ya
 echo "Configurando el montaje automático en el arranque..."
@@ -62,8 +61,9 @@ sudo mount -a
 
 # 5. Comprobación profesional
 if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6"; then
-if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5"; then
     echo "¡Script ejecutado correctamente! Las cinco unidades están montadas."
+    ./addcron.sh
 else
     echo "Hubo un error al intentar montar las unidades. Revisa la IP, los nombres de las carpetas compartidas o las credenciales."
 fi
+
