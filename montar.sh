@@ -7,6 +7,7 @@ PUNTO_MONTAJE_4="/mnt/windows/PricingTool"
 PUNTO_MONTAJE_5="/mnt/windows/certs"
 PUNTO_MONTAJE_6="/mnt/windows/disco_e"
 PUNTO_MONTAJE_7="/mnt/windows/FTP"
+PUNTO_MONTAJE_8="/mnt/windows/interface"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -61,12 +62,16 @@ fi
 if ! grep -q "10.0.0.100/FTP " /etc/fstab; then
     echo "//10.0.0.100/FTP  $PUNTO_MONTAJE_7  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
+
+if ! grep -q "10.0.0.100/interface" /etc/fstab; then
+    echo "//10.0.0.100/interface  $PUNTO_MONTAJE_8  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+fi
 # 4. Recargar y montar
 sudo systemctl daemon-reload
 sudo mount -a
 
 # 5. Comprobación profesional
-if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6" && mountpoint -q "$PUNTO_MONTAJE_7"; then
+if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6" && mountpoint -q "$PUNTO_MONTAJE_7" && mountpoint -q "$PUNTO_MONTAJE_8"; then
     echo "¡Script ejecutado correctamente! Las cinco unidades están montadas."
     ./addcron.sh
 else
