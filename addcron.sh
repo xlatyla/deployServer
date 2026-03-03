@@ -11,6 +11,16 @@ echo "1. Levantando contenedores de ejecución continua..."
 # Solo queda pricing-tool como continuo
 /usr/bin/docker compose up -d pricing-tool
 
+/usr/bin/docker compose up -d xpo-report-service prelist-report-service
+
+HORA_ACTUAL=$(date +%H)
+if [ "$HORA_ACTUAL" -lt 7 ] || [ "$HORA_ACTUAL" -ge 19 ]; then
+    echo "Fuera de horario(07:00-19:00). Pausando servicios de reportes hasta el próximo turno..."
+    /usr/bin/docker stop xpo-report-app prelist-report-app > /dev/null 2>&1
+else
+    echo "Dentro de horario. Los servicios de reportes quedan encendidos."
+fi
+
 # 2. Configurar tareas programadas (Cron) para docker_user
 echo "2. Configurando programador de tareas (Cron) para el usuario docker_user..."
 
@@ -42,6 +52,9 @@ cat <<EOF >> "$CRON_TMP"
 0 21 * * 1-5 cd $DIRECTORIO_PROYECTO && /usr/bin/docker compose up -d sales-report-service >> /home/docker_user/cron_sales.log 2>&1
 EOF
 
+0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app >> /home/docker_user/cron_reports.log 2>&1
+
+0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app >> /home/docker_user/cron_reports.log 2>&1
 # Aplicamos el nuevo crontab EXCLUSIVAMENTE al usuario docker_user
 crontab -u docker_user "$CRON_TMP"
 rm "$CRON_TMP"
@@ -51,3 +64,4 @@ echo ""
 echo "=== RESUMEN DE ESTADO ==="
 echo "🟢 CONTINUOS (Corriendo): pricing-tool"
 echo "⏳ PROGRAMADOS (En espera): tempdb, certs-checker, chemeter, auto-dashboard, deepdive, sales-report"
+echo "⏰ CONTROLADOS (Start/Stop): xpo-report, prelist-report (De 07:00 a 19:00)"
