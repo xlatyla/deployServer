@@ -13,6 +13,10 @@ echo "1. Levantando contenedores de ejecución continua..."
 
 /usr/bin/docker compose up -d xpo-report-service prelist-report-service
 
+/usr/bin/docker compose up -d ips-mail-service
+
+/usr/bin/docker compose up -d error-interface-service
+
 HORA_ACTUAL=$(date +%H)
 if [ "$HORA_ACTUAL" -lt 7 ] || [ "$HORA_ACTUAL" -ge 19 ]; then
     echo "Fuera de horario(07:00-19:00). Pausando servicios de reportes hasta el próximo turno..."
