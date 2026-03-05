@@ -9,6 +9,7 @@ PUNTO_MONTAJE_6="/mnt/windows/disco_e"
 PUNTO_MONTAJE_7="/mnt/windows/FTP"
 PUNTO_MONTAJE_8="/mnt/windows/interface"
 PUNTO_MONTAJE_9="/mnt/windows/incidents"
+PUNTO_MONTAJE_10="/mnt/windows/FTP/VERONELLI"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -34,6 +35,7 @@ sudo mkdir -p "$PUNTO_MONTAJE_6"
 sudo mkdir -p "$PUNTO_MONTAJE_7"
 sudo mkdir -p "$PUNTO_MONTAJE_8"
 sudo mkdir -p "$PUNTO_MONTAJE_9"
+sudo mkdir -p "$PUNTO_MONTAJE_10"
 # 3. Añadir a fstab si no existen ya
 echo "Configurando el montaje automático en el arranque..."
 
@@ -73,12 +75,15 @@ if ! grep -q "$PUNTO_MONTAJE_9" /etc/fstab; then
     echo "//10.0.0.103/incidents  $PUNTO_MONTAJE_9  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
+if ! grep -q "$PUNTO_MONTAJE_10" /etc/fstab; then
+    echo "//10.0.0.101/FTP/VERONELLI  $PUNTO_MONTAJE_10  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+fi
 # 4. Recargar y montar
 sudo systemctl daemon-reload
 sudo mount -a
 
 # 5. Comprobación profesional
-if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6" && mountpoint -q "$PUNTO_MONTAJE_7" && mountpoint -q "$PUNTO_MONTAJE_8" && mountpoint -q "$PUNTO_MONTAJE_9"; then
+if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6" && mountpoint -q "$PUNTO_MONTAJE_7" && mountpoint -q "$PUNTO_MONTAJE_8" && mountpoint -q "$PUNTO_MONTAJE_9" && mountpoint -q "$PUNTO_MONTAJE_10"; then
     echo "¡Script ejecutado correctamente! Las cinco unidades están montadas."
     ./addcron.sh
 else
