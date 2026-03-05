@@ -9,7 +9,7 @@ PUNTO_MONTAJE_6="/mnt/windows/disco_e"
 PUNTO_MONTAJE_7="/mnt/windows/FTP"
 PUNTO_MONTAJE_8="/mnt/windows/interface"
 PUNTO_MONTAJE_9="/mnt/windows/incidents"
-PUNTO_MONTAJE_10="/mnt/windows/FTP/VERONELLI"
+PUNTO_MONTAJE_10="/mnt/windows/veronelli"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y

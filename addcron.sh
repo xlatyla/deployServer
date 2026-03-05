@@ -9,13 +9,13 @@ cd "$DIRECTORIO_PROYECTO" || { echo "Error: No se encontró el directorio $DIREC
 # 1. Levantamos EXCLUSIVAMENTE los contenedores continuos (Daemons) SIN SUDO
 echo "1. Levantando contenedores de ejecución continua..."
 # Solo queda pricing-tool como continuo
-/usr/bin/docker compose up -d pricing-tool
+/usr/bin/docker compose up -d --build pricing-tool
 
-/usr/bin/docker compose up -d xpo-report-service prelist-report-service
+/usr/bin/docker compose up -d --build xpo-report-service prelist-report-service
 
-/usr/bin/docker compose up -d ips-mail-service
+/usr/bin/docker compose up -d --build ips-mail-service
 
-/usr/bin/docker compose up -d error-interface-service
+/usr/bin/docker compose up -d --build error-interface-service
 
 HORA_ACTUAL=$(date +%H)
 if [ "$HORA_ACTUAL" -lt 7 ] || [ "$HORA_ACTUAL" -ge 19 ]; then
