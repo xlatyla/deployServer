@@ -17,10 +17,11 @@ echo "1. Levantando contenedores de ejecución continua..."
 
 /usr/bin/docker compose up -d --build error-interface-service
 
+/usr/bin/docker compose up -d --build veronelli-service
 HORA_ACTUAL=$(date +%H)
 if [ "$HORA_ACTUAL" -lt 7 ] || [ "$HORA_ACTUAL" -ge 19 ]; then
     echo "Fuera de horario(07:00-19:00). Pausando servicios de reportes hasta el próximo turno..."
-    /usr/bin/docker stop xpo-report-app prelist-report-app > /dev/null 2>&1
+    /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-service > /dev/null 2>&1
 else
     echo "Dentro de horario. Los servicios de reportes quedan encendidos."
 fi
@@ -56,9 +57,9 @@ cat <<EOF >> "$CRON_TMP"
 0 21 * * 1-5 cd $DIRECTORIO_PROYECTO && /usr/bin/docker compose up -d sales-report-service >> /home/docker_user/cron_sales.log 2>&1
 EOF
 
-0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app >> /home/docker_user/cron_reports.log 2>&1
+0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-service >> /home/docker_user/cron_reports.log 2>&1
 
-0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app >> /home/docker_user/cron_reports.log 2>&1
+0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-service >> /home/docker_user/cron_reports.log 2>&1
 # Aplicamos el nuevo crontab EXCLUSIVAMENTE al usuario docker_user
 crontab -u docker_user "$CRON_TMP"
 rm "$CRON_TMP"
