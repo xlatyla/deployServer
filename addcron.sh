@@ -19,13 +19,13 @@ cd "$DIR_SPT" || { echo "Error: No se encontró $DIR_SPT"; exit 1; }
 /usr/bin/docker compose up -d --build error-interface-service
 /usr/bin/docker compose up -d --build veronelli-service
 /usr/bin/docker compose up -d --build servicio_impresion
-
+/usr/bin/docker compose up -d --build omya-sftp-service
 # 3. Control de horario (Apagar si es de noche al ejecutar el script manualmente)
 HORA_ACTUAL=$(date +%H)
 if [ "$HORA_ACTUAL" -lt 7 ] || [ "$HORA_ACTUAL" -ge 19 ]; then
     echo "Fuera de horario (07:00-19:00). Pausando servicios controlados..."
     # Se añade servicio_impresion-app y se elimina expedition-list-app
-    /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app > /dev/null 2>&1
+    /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app > /dev/null 2>&1
 else
     echo "Dentro de horario. Los servicios quedan encendidos."
 fi
@@ -61,10 +61,10 @@ cat <<EOF >> "$CRON_TMP"
 0 21 * * 1-5 cd $DIR_ADI && /usr/bin/docker compose up -d sales-report-service >> /home/docker_user/cron_sales.log 2>&1
 
 # Encender TODOS los servicios SPT a las 07:00 AM todos los días
-0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app >> /home/docker_user/cron_reports.log 2>&1
+0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app >> /home/docker_user/cron_reports.log 2>&1
 
 # Apagar TODOS los servicios SPT a las 19:00 PM todos los días
-0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app >> /home/docker_user/cron_reports.log 2>&1
+0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app >> /home/docker_user/cron_reports.log 2>&1
 EOF
 
 # Aplicamos el nuevo crontab EXCLUSIVAMENTE al usuario docker_user
@@ -76,4 +76,4 @@ echo ""
 echo "=== RESUMEN DE ESTADO ==="
 echo "🟢 CONTINUOS (Corriendo 24/7): pricing-tool"
 echo "⏳ PROGRAMADOS (En espera ADI): tempdb, certs, chemeter, dashboard, deepdive, sales"
-echo "⏰ CONTROLADOS (Start/Stop SPT): xpo-report, prelist, veronelli, ips-mail, error-interface, servicio_impresion (De 07:00 a 19:00)"
+echo "⏰ CONTROLADOS (Start/Stop SPT): xpo-report, prelist, veronelli, ips-mail, error-interface, servicio_impresion, moves_files_omya (De 07:00 a 19:00)"
