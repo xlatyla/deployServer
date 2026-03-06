@@ -10,6 +10,9 @@ PUNTO_MONTAJE_7="/mnt/windows/FTP"
 PUNTO_MONTAJE_8="/mnt/windows/interface"
 PUNTO_MONTAJE_9="/mnt/windows/incidents"
 PUNTO_MONTAJE_10="/mnt/windows/veronelli"
+PUNTO_MONTAJE_11="/mnt/windows/omya_parse"
+PUNTO_MONTAJE_12="/mnt/windows/sage_interface"
+PUNTO_MONTAJE_13="/mnt/windows/omya_tosap"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -36,6 +39,9 @@ sudo mkdir -p "$PUNTO_MONTAJE_7"
 sudo mkdir -p "$PUNTO_MONTAJE_8"
 sudo mkdir -p "$PUNTO_MONTAJE_9"
 sudo mkdir -p "$PUNTO_MONTAJE_10"
+sudo mkdir -p "$PUNTO_MONTAJE_11"
+sudo mkdir -p "$PUNTO_MONTAJE_12"
+sudo mkdir -p "$PUNTO_MONTAJE_13"
 # 3. Añadir a fstab si no existen ya
 echo "Configurando el montaje automático en el arranque..."
 
@@ -78,15 +84,65 @@ fi
 if ! grep -q "$PUNTO_MONTAJE_10" /etc/fstab; then
     echo "//10.0.0.101/FTP/VERONELLI  $PUNTO_MONTAJE_10  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
-# 4. Recargar y montar
-sudo systemctl daemon-reload
-sudo mount -a
 
-# 5. Comprobación profesional
-if mountpoint -q "$PUNTO_MONTAJE_1" && mountpoint -q "$PUNTO_MONTAJE_2" && mountpoint -q "$PUNTO_MONTAJE_3" && mountpoint -q "$PUNTO_MONTAJE_4" && mountpoint -q "$PUNTO_MONTAJE_5" && mountpoint -q "$PUNTO_MONTAJE_6" && mountpoint -q "$PUNTO_MONTAJE_7" && mountpoint -q "$PUNTO_MONTAJE_8" && mountpoint -q "$PUNTO_MONTAJE_9" && mountpoint -q "$PUNTO_MONTAJE_10"; then
-    echo "¡Script ejecutado correctamente! Las cinco unidades están montadas."
-    ./addcron.sh
-else
-    echo "Hubo un error al intentar montar las unidades. Revisa la IP, los nombres de las carpetas compartidas o las credenciales."
+if ! grep -q "$PUNTO_MONTAJE_11" /etc/fstab; then
+    echo "//10.0.0.101/FTP/OMYA/parsePlant  $PUNTO_MONTAJE_11  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
+if ! grep -q "$PUNTO_MONTAJE_12" /etc/fstab; then
+    echo "//10.0.0.100/interface/REAL/SPPT0_2  $PUNTO_MONTAJE_12  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+fi
+
+if ! grep -q "$PUNTO_MONTAJE_13" /etc/fstab; then
+    echo "//10.0.0.101/FTP/OMYA/tosap  $PUNTO_MONTAJE_13  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+fi
+# 4. Recargar y montar
+sudo systemctl daemon-reload
+
+echo "Comprobando estado de las conexiones con Windows..."
+
+PUNTOS_DE_MONTAJE=(
+    "$PUNTO_MONTAJE_1"
+    "$PUNTO_MONTAJE_2"
+    "$PUNTO_MONTAJE_3"
+    "$PUNTO_MONTAJE_4"
+    "$PUNTO_MONTAJE_5"
+    "$PUNTO_MONTAJE_6"
+    "$PUNTO_MONTAJE_7"
+    "$PUNTO_MONTAJE_8"
+    "$PUNTO_MONTAJE_9"
+    "$PUNTO_MONTAJE_10"
+    "$PUNTO_MONTAJE_11"
+    "$PUNTO_MONTAJE_12"
+    "$PUNTO_MONTAJE_13"
+)
+
+TODOS_MONTADOS=true
+
+# Recorremos la lista uno por uno
+for RUTA in "${PUNTOS_DE_MONTAJE[@]}"; do
+    if [ -n "$RUTA" ]; then
+        # Comprobamos localmente si ya es un punto de montaje activo
+        if mountpoint -q "$RUTA"; then
+            echo "✅ $RUTA -> Ya estaba montado. Omitiendo petición a Windows."
+        else
+            echo "⏳ $RUTA -> Desconectado. Solicitando acceso a Windows..."
+            sudo mount "$RUTA"
+
+            # Verificamos si se montó correctamente tras pedirlo
+            if ! mountpoint -q "$RUTA"; then
+                echo "❌ ERROR: No se pudo conectar $RUTA. Revisa la ruta o permisos compartidos."
+                TODOS_MONTADOS=false
+            fi
+        fi
+    fi
+done
+
+echo "----------------------------------------------------"
+if [ "$TODOS_MONTADOS" = true ]; then
+    echo "¡Script ejecutado con éxito! Las 13 unidades están operativas."
+    # Llamamos a tu script auxiliar si procede
+    ./addcron.sh
+else
+    echo "¡Atención! Hubo un error al intentar montar alguna unidad. Revisa los errores (❌) mostrados arriba."
+fi
