@@ -42,7 +42,7 @@ crontab -u docker_user -l 2>/dev/null | grep -v -E "docker compose up|docker sta
 # Inyectamos las horas exactas en el crontab
 cat <<EOF >> "$CRON_TMP"
 # Ejecutar tempdb de lunes a viernes a las 07:30
-30 7 * * 1-5 cd $DIR_ADI && /usr/bin/docker compose up -d tempdb-service >> /home/docker_user/cron_tempdb.log 2>&1
+30 7 * * 1-5 cd $DIR_ADI && /usr/bin/docker compose up -d disk-monitor-service >> /home/docker_user/cron_tempdb.log 2>&1
 
 # Ejecutar certs-checker de lunes a domingo (Todos los días) a las 09:00
 0 9 * * * cd $DIR_ADI && /usr/bin/docker compose up -d certs-checker-service >> /home/docker_user/cron_certs.log 2>&1
