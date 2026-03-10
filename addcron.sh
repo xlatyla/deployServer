@@ -20,12 +20,20 @@ cd "$DIR_SPT" || { echo "Error: No se encontró $DIR_SPT"; exit 1; }
 /usr/bin/docker compose up -d --build veronelli-service
 /usr/bin/docker compose up -d --build servicio_impresion
 /usr/bin/docker compose up -d --build omya-sftp-service
+/usr/bin/docker compose up -d --build lumar-sql-service
+/usr/bin/docker compose up -d --build lumar-files-service
+/usr/bin/docker compose up -d --build lumar-recap-service
+/usr/bin/docker compose up -d --build lumar-entregas-service
+
+# Forzamos el apagado inmediato de entregas para que respete su turno estricto del cron
+/usr/bin/docker stop lumar-entregas-app > /dev/null 2>&1
+
 # 3. Control de horario (Apagar si es de noche al ejecutar el script manualmente)
 HORA_ACTUAL=$(date +%H)
 if [ "$HORA_ACTUAL" -lt 7 ] || [ "$HORA_ACTUAL" -ge 19 ]; then
     echo "Fuera de horario (07:00-19:00). Pausando servicios controlados..."
     # Se añade servicio_impresion-app y se elimina expedition-list-app
-    /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app > /dev/null 2>&1
+    /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app lumar-sql-app lumar-files-app lumar-recap-app > /dev/null 2>&1
 else
     echo "Dentro de horario. Los servicios quedan encendidos."
 fi
@@ -61,10 +69,20 @@ cat <<EOF >> "$CRON_TMP"
 0 21 * * 1-5 cd $DIR_ADI && /usr/bin/docker compose up -d sales-report-service >> /home/docker_user/cron_sales.log 2>&1
 
 # Encender TODOS los servicios SPT a las 07:00 AM todos los días
-0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app >> /home/docker_user/cron_reports.log 2>&1
+0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app lumar-sql-app lumar-files-app lumar-recap-app >> /home/docker_user/cron_reports.log 2>&1
 
 # Apagar TODOS los servicios SPT a las 19:00 PM todos los días
-0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app >> /home/docker_user/cron_reports.log 2>&1
+0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app lumar-sql-app lumar-files-app lumar-recap-app >> /home/docker_user/cron_reports.log 2>&1
+
+# ----- HORARIO EXCLUSIVO LUMAR ENTREGAS (14:00 y 23:00) -----
+# Turno de mediodía (Enciende 13:50, apaga 14:10)
+50 13 * * 1-5 /usr/bin/docker start lumar-entregas-app >> /home/docker_user/cron_reports.log 2>&1
+10 14 * * 1-5 /usr/bin/docker stop lumar-entregas-app >> /home/docker_user/cron_reports.log 2>&1
+
+# Turno de noche (Enciende 22:50, apaga 23:10)
+50 22 * * 1-5 /usr/bin/docker start lumar-entregas-app >> /home/docker_user/cron_reports.log 2>&1
+10 23 * * 1-5 /usr/bin/docker stop lumar-entregas-app >> /home/docker_user/cron_reports.log 2>&1
+
 EOF
 
 # Aplicamos el nuevo crontab EXCLUSIVAMENTE al usuario docker_user
@@ -76,4 +94,5 @@ echo ""
 echo "=== RESUMEN DE ESTADO ==="
 echo "🟢 CONTINUOS (Corriendo 24/7): pricing-tool"
 echo "⏳ PROGRAMADOS (En espera ADI): tempdb, certs, chemeter, dashboard, deepdive, sales"
-echo "⏰ CONTROLADOS (Start/Stop SPT): xpo-report, prelist, veronelli, ips-mail, error-interface, servicio_impresion, moves_files_omya (De 07:00 a 19:00)"
+echo "⏰ CONTROLADOS DIURNOS (07:00-19:00): xpo-report, prelist, veronelli, ips-mail, error-interface, servicio_impresion, moves_files_omya, lumar-sql, lumar-files, lumar-recap"
+echo "🌙 CONTROLADOS ESPECÍFICOS: lumar-entregas (Activo solo de 13:50-14:10 y 22:50-23:10)"
