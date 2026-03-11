@@ -15,6 +15,7 @@ PUNTO_MONTAJE_12="/mnt/windows/sage_interface"
 PUNTO_MONTAJE_13="/mnt/windows/omya_tosap"
 PUNTO_MONTAJE_14="/mnt/windows/omya_procesado"
 PUNTO_MONTAJE_15="/mnt/windows/disco_g"
+PUNTO_MONTAJE_16="/mnt/windows/prueba_azelis"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -46,6 +47,7 @@ sudo mkdir -p "$PUNTO_MONTAJE_12"
 sudo mkdir -p "$PUNTO_MONTAJE_13"
 sudo mkdir -p "$PUNTO_MONTAJE_14"
 sudo mkdir -p "$PUNTO_MONTAJE_15"
+sudo mkdir -p "$PUNTO_MONTAJE_16"
 # 3. Añadir a fstab si no existen ya
 echo "Configurando el montaje automático en el arranque..."
 
@@ -109,6 +111,10 @@ if ! grep -q "$PUNTO_MONTAJE_15" /etc/fstab; then
     echo "//10.0.0.100/G\$  $PUNTO_MONTAJE_15  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
+if ! grep -q "$PUNTO_MONTAJE_16" /etc/fstab; then
+    echo "//10.0.0.101/prueba_azelis  $PUNTO_MONTAJE_16  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+fi
+
 # 4. Recargar y montar
 sudo systemctl daemon-reload
 
@@ -130,6 +136,7 @@ PUNTOS_DE_MONTAJE=(
     "$PUNTO_MONTAJE_13"
     "$PUNTO_MONTAJE_14"
     "$PUNTO_MONTAJE_15"
+    "$PUNTO_MONTAJE_16"
 )
 
 TODOS_MONTADOS=true
