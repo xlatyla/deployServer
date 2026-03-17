@@ -15,7 +15,7 @@ PUNTO_MONTAJE_12="/mnt/windows/sage_interface"
 PUNTO_MONTAJE_13="/mnt/windows/omya_tosap"
 PUNTO_MONTAJE_14="/mnt/windows/omya_procesado"
 PUNTO_MONTAJE_15="/mnt/windows/disco_g"
-PUNTO_MONTAJE_16="/mnt/windows/prueba_azelis"
+PUNTO_MONTAJE_16="/mnt/windows/azelis_files"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -112,7 +112,7 @@ if ! grep -q "$PUNTO_MONTAJE_15" /etc/fstab; then
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_16" /etc/fstab; then
-    echo "//10.0.0.101/prueba_azelis  $PUNTO_MONTAJE_16  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.101/Azelis_files  $PUNTO_MONTAJE_16  cifs  credentials=$CREDENCIALES,vers=3.0,_netdev,nofail,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 # 4. Recargar y montar
