@@ -162,9 +162,9 @@ done
 
 echo "----------------------------------------------------"
 if [ "$TODOS_MONTADOS" = true ]; then
-    echo "¡Script ejecutado con éxito! Las 13 unidades están operativas."
+    echo "¡Script ejecutado con éxito! Las 16 unidades están operativas."
     # Llamamos a tu script auxiliar si procede
-    ./addcron.sh
+    #./addcron.sh
 else
     echo "¡Atención! Hubo un error al intentar montar alguna unidad. Revisa los errores (❌) mostrados arriba."
 fi
