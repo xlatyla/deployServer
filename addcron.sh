@@ -71,10 +71,10 @@ cat <<EOF >> "$CRON_TMP"
 0 21 * * 1-5 cd $DIR_ADI && /usr/bin/docker compose up -d sales-report-service >> /home/docker_user/cron_sales.log 2>&1
 
 # Encender los servicios SPT controlados a las 07:00 AM todos los días (Sin los 3 de Lumar)
-0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app barcelonesa-app servicio_impresion-app omya-sftp-app ntl-ftp-app >> /home/docker_user/cron_reports.log 2>&1
+0 7 * * * /usr/bin/docker start xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app ntl-ftp-app barcelonesa-app >> /home/docker_user/cron_reports.log 2>&1
 
 # Apagar los servicios SPT controlados a las 19:00 PM todos los días (Sin los 3 de Lumar)
-0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app barcelonesa-app servicio_impresion-app omya-sftp-app ntl-ftp-app >> /home/docker_user/cron_reports.log 2>&1
+0 19 * * * /usr/bin/docker stop xpo-report-app prelist-report-app veronelli-app ips-mail-app error-interface-app servicio_impresion-app omya-sftp-app ntl-ftp-app barcelonesa-app >> /home/docker_user/cron_reports.log 2>&1
 
 # ----- HORARIO EXCLUSIVO LUMAR ENTREGAS (14:00 y 23:00) -----
 # Turno de mediodía (Enciende 13:50, apaga 14:10)
