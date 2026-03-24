@@ -38,7 +38,6 @@ if [[ "$confirmacion" != "s" && "$confirmacion" != "S" ]]; then
     exit 1
 fi
 
-# ... (siguientes comandos del script aquí) ...
 echo "Continuando con la ejecución..."
 
 git clone git@github.com:xlatyla/servicesADI.git /home/docker_user/servicesADI
