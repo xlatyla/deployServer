@@ -6,9 +6,9 @@ PUNTO_MONTAJE_3="/mnt/windows/PricingToolProccessed"
 PUNTO_MONTAJE_4="/mnt/windows/PricingTool"
 PUNTO_MONTAJE_5="/mnt/windows/certs"
 PUNTO_MONTAJE_6="/mnt/windows/disco_e"
-PUNTO_MONTAJE_7="/mnt/windows/FTP"
+PUNTO_MONTAJE_7="/mnt/windows/incidents_ips"
 PUNTO_MONTAJE_8="/mnt/windows/interface"
-PUNTO_MONTAJE_9="/mnt/windows/incidents"
+PUNTO_MONTAJE_9="/mnt/windows/documents_ips"
 PUNTO_MONTAJE_10="/mnt/windows/veronelli"
 PUNTO_MONTAJE_11="/mnt/windows/omya_parse"
 PUNTO_MONTAJE_12="/mnt/windows/sage_interface"
@@ -16,7 +16,7 @@ PUNTO_MONTAJE_13="/mnt/windows/omya_tosap"
 PUNTO_MONTAJE_14="/mnt/windows/omya_procesado"
 PUNTO_MONTAJE_15="/mnt/windows/disco_g"
 PUNTO_MONTAJE_16="/mnt/windows/azelis_files"
-PUNTO_MONTAJE_17="/mnt/windows/ftp_barcelonesa"
+PUNTO_MONTAJE_17="/mnt/windows/interface/previo_omya"
 CREDENCIALES="/root/.smbcredentials"
 
 sudo apt install cifs-utils -y
@@ -65,7 +65,7 @@ if ! grep -q "$PUNTO_MONTAJE_3" /etc/fstab; then
     echo "//10.0.0.101/servicesADI/pricingtool/processed  $PUNTO_MONTAJE_3  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
-if ! grep -q "$PUNTO_MONTAJE_4" /etc/fstab; then
+if ! grep -qw "$PUNTO_MONTAJE_4" /etc/fstab; then
     echo "//10.0.0.101/servicesADI/pricingtool  $PUNTO_MONTAJE_4  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
@@ -78,7 +78,7 @@ if ! grep -q "$PUNTO_MONTAJE_6" /etc/fstab; then
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_7" /etc/fstab; then
-    echo "//10.0.0.101/servicesSPT/ntl  $PUNTO_MONTAJE_7  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.103/incidents_ips $PUNTO_MONTAJE_7  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_8" /etc/fstab; then
@@ -86,7 +86,7 @@ if ! grep -q "$PUNTO_MONTAJE_8" /etc/fstab; then
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_9" /etc/fstab; then
-    echo "//10.0.0.103/incidents  $PUNTO_MONTAJE_9  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.103/documents_ips  $PUNTO_MONTAJE_9  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_10" /etc/fstab; then
@@ -94,7 +94,7 @@ if ! grep -q "$PUNTO_MONTAJE_10" /etc/fstab; then
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_11" /etc/fstab; then
-    echo "//10.0.0.101/FTP/OMYA/parsePlant  $PUNTO_MONTAJE_11  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.101/FTP/OMYA/parsePlant $PUNTO_MONTAJE_11 cifs credentials=$CREDENCIALES,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,vers=3.0,nounix,noserverino,_netdev,nofail,x-systemd.automount 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_12" /etc/fstab; then
@@ -102,11 +102,11 @@ if ! grep -q "$PUNTO_MONTAJE_12" /etc/fstab; then
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_13" /etc/fstab; then
-    echo "//10.0.0.101/FTP/OMYA/tosap  $PUNTO_MONTAJE_13  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.101/FTP/OMYA/tosap $PUNTO_MONTAJE_13 cifs credentials=$CREDENCIALES,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,vers=3.0,nounix,noserverino,_netdev,nofail,x-systemd.automount 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_14" /etc/fstab; then
-    echo "//10.0.0.101/FTP/OMYA/Procesado  $PUNTO_MONTAJE_14  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.101/FTP/OMYA/Procesado $PUNTO_MONTAJE_14 cifs credentials=$CREDENCIALES,uid=1000,gid=1000,file_mode=0777,dir_mode=0777,vers=3.0,nounix,noserverino,_netdev,nofail,x-systemd.automount 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_15" /etc/fstab; then
@@ -118,9 +118,8 @@ if ! grep -q "$PUNTO_MONTAJE_16" /etc/fstab; then
 fi
 
 if ! grep -q "$PUNTO_MONTAJE_17" /etc/fstab; then
-    echo "//10.0.0.101/FTP/BARCELONESA  $PUNTO_MONTAJE_17  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
+    echo "//10.0.0.100/interface/REAL/SPPT0_2/PREVIO_OMYA  $PUNTO_MONTAJE_17  cifs  credentials=$CREDENCIALES,file_mode=0777,dir_mode=0777,vers=3.0,_netdev,nofail,x-systemd.automount,x-systemd.requires=network-online.target 0 0" | sudo tee -a /etc/fstab > /dev/null
 fi
-
 # 4. Recargar y montar
 sudo systemctl daemon-reload
 
@@ -170,7 +169,6 @@ done
 echo "----------------------------------------------------"
 if [ "$TODOS_MONTADOS" = true ]; then
     echo "¡Script ejecutado con éxito! Las 16 unidades están operativas."
-    # Llamamos a tu script auxiliar si procede
     #./addcron.sh
 else
     echo "¡Atención! Hubo un error al intentar montar alguna unidad. Revisa los errores (❌) mostrados arriba."

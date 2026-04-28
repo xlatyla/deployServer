@@ -18,7 +18,7 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 
 sudo useradd -m -s /bin/bash "docker_user" || true
 
-echo 'docker_user:docker_user' | sudo chpasswd
+echo 'docker_user:1E6061A5B0e!' | sudo chpasswd
 
 sudo usermod -aG docker "docker_user"
 
@@ -62,7 +62,7 @@ sudo systemctl restart cups
 
 echo "Instalación completada con éxito!"
 
-./montar.sh
+#./montar.sh
 
 
 
